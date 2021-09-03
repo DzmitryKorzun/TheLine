@@ -6,14 +6,34 @@ public class LevelGenerator : MonoBehaviour
 {
     [Inject]
     private Pool _pool;
+    private Camera cam;
+    private 
+
+
+    private void Awake()
+    {
+        cam = Camera.main;
+
+    }
+
+
     void Start()
     {
         _pool.GetFreeElement();
     }
 
 
-    void Update()
+
+
+    private void AddNewRowOfMap()
     {
-        
+
     }
+
+    private void DisplacementGridGeneration()
+    {
+
+    }
+
+
 }

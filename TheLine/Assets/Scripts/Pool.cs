@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Zenject;
 public class Pool : MonoBehaviour
 {
-    [SerializeField] private PoolObject _prefab;
-    [SerializeField] private Transform _container;
+    [Inject]private PoolObject _prefab;
+    private Transform _container;
     [SerializeField] private int _minCapacity = 10;
     [SerializeField] private int _maxCapacity = 30;
     [SerializeField] private List<PoolObject> _myPool;
@@ -14,6 +14,7 @@ public class Pool : MonoBehaviour
 
     private void Start()
     {
+        _container = this.transform;
         CreatePool(); 
     }
 
@@ -83,6 +84,7 @@ public class Pool : MonoBehaviour
     {
         if (TryGetElement(out var el))
         {
+            el.transform.position = position;
             return el;
         }
 
