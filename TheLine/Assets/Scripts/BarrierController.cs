@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 using DG.Tweening;
+using System;
+
 [RequireComponent(typeof(PoolObject))]
 
 public class BarrierController : MonoBehaviour
@@ -10,12 +12,35 @@ public class BarrierController : MonoBehaviour
     [Inject]
     private PersonController person;
 
-    public delegate void deactivationRow();
-    public event deactivationRow deactivationRowEvent;
+    public Action deactivationRowEvent;
+    public float speed = 6;
+    Sequence mySequence;
+    private void Awake()
+    {        
+        mySequence = DOTween.Sequence();
+
+    }
+
+    public void GetPersonReference(PersonController refPerson)
+    {
+        person = refPerson;
+        person.OnStartGame += ContinueGame;
+        person.OnPauseGame += StopMove;
+    }
 
     private void Start()
     {
-        this.transform.DOMoveY(-6, 6).OnComplete(deactivateBarrier).SetEase(Ease.Linear); ;
+        mySequence.Append(this.transform.DOMoveY(-6, speed).OnComplete(deactivateBarrier).SetEase(Ease.Linear)); 
+    }
+
+    private void StopMove()
+    {        
+        mySequence.Pause();
+    }
+
+    private void ContinueGame()
+    {
+        mySequence.Play();
     }
 
     private void deactivateBarrier()
@@ -24,20 +49,9 @@ public class BarrierController : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnEnable()
     {
-        if (person.gameObject.Equals(collision.gameObject))
-        {
-            if (person.isVulnerable)
-            {
-                person.Death();
-            }
-            else
-            {
-                this.gameObject.SetActive(false);
-            }
-        }
-        Debug.Log(collision);
+        
     }
 
 }

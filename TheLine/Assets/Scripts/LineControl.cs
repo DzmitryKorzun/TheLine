@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
-public class LineControl : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class LineControl : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
-    [Inject]
-    private PersonController personController;
+    [Inject] private PersonController personController;
+
     private Camera cam;
 
     private void Awake()
@@ -16,8 +16,7 @@ public class LineControl : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        var x = cam.ScreenToWorldPoint(eventData.pressPosition).x;
-        personController.СhangeOfLocation(x);
+        OnDrag(eventData);
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -25,8 +24,9 @@ public class LineControl : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     }
 
-
-
-    
-
+    public void OnDrag(PointerEventData eventData)
+    {
+        var x = cam.ScreenToWorldPoint(eventData.position).x;
+        personController.СhangeOfLocation(x);
+    }
 }

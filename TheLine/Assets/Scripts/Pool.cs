@@ -6,6 +6,7 @@ using Zenject;
 public class Pool : MonoBehaviour
 {
     [Inject]private PoolObject _prefab;
+    [Inject] private PersonController personController;
     private Transform _container;
     [SerializeField] private int _minCapacity = 10;
     [SerializeField] private int _maxCapacity = 30;
@@ -80,21 +81,28 @@ public class Pool : MonoBehaviour
         throw new Exception("No empty Element :-(");
     }
 
-    public PoolObject GetFreeElement(Vector3 position)
+    public PoolObject GetFreeElement(Vector2 position)
     {
         if (TryGetElement(out var el))
         {
-            el.transform.position = position;
+            Destroy(el.GetComponent<ZenjectBinding>());
+            el.GetComponent<BarrierController>().GetPersonReference(personController);
+            el.transform.localPosition = position;
             return el;
         }
 
         if (_autoExpand)
         {
-            return CreateNewElement(true);
+            var tmpObj = CreateNewElement(true);
+            Destroy(tmpObj.GetComponent<ZenjectBinding>());
+            tmpObj.GetComponent<BarrierController>().GetPersonReference(personController);
+            tmpObj.transform.localPosition = position;
+            return tmpObj;
         }
 
         throw new Exception("No empty Element :-(");
-    }
+    }   
+    
 
 
 }
