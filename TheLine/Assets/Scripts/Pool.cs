@@ -13,9 +13,15 @@ public class Pool : MonoBehaviour
     [SerializeField] private List<PoolObject> _myPool;
     [SerializeField] private bool _autoExpand;
 
-    private void Start()
+    private void Awake()
     {
         _container = this.transform;
+    }
+
+
+    private void Start()
+    {
+
         CreatePool(); 
     }
 
@@ -53,7 +59,6 @@ public class Pool : MonoBehaviour
             if (!item.gameObject.activeInHierarchy)
             {
                 el = item;
-                item.gameObject.SetActive(true);
                 return true;
             }
         }
@@ -86,8 +91,8 @@ public class Pool : MonoBehaviour
         if (TryGetElement(out var el))
         {
             Destroy(el.GetComponent<ZenjectBinding>());
-            el.GetComponent<BarrierController>().GetPersonReference(personController);
             el.transform.localPosition = position;
+            el.gameObject.SetActive(true);
             return el;
         }
 
@@ -95,8 +100,8 @@ public class Pool : MonoBehaviour
         {
             var tmpObj = CreateNewElement(true);
             Destroy(tmpObj.GetComponent<ZenjectBinding>());
-            tmpObj.GetComponent<BarrierController>().GetPersonReference(personController);
             tmpObj.transform.localPosition = position;
+            tmpObj.gameObject.SetActive(true);
             return tmpObj;
         }
 

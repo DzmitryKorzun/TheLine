@@ -41,6 +41,7 @@ public class PersonController : MonoBehaviour
             else
             {
                 collision.gameObject.SetActive(false);
+                collision.transform.DOKill();
             }
         }
     }

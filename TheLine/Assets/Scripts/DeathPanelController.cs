@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using Zenject;
 public class DeathPanelController : MonoBehaviour
 {
     [Inject] private PersonController personController;
+    [Inject] private ScorePanelController scorePanelController;
     [Inject] private EventSystem eventSystem;
-
+    private Text scoreText;
     private void Awake()
     {
         personController.GameOver += WaitingForThePanelToOpen;
-        Debug.Log("Init");
+        scoreText = GetComponentInChildren<Text>();
     }
 
     void Start()
@@ -28,6 +30,7 @@ public class DeathPanelController : MonoBehaviour
 
     private void ActivatePanel()
     {
+        scoreText.text = scorePanelController.GetResultGame();
         eventSystem.enabled = true;
         this.gameObject.SetActive(true);
     }

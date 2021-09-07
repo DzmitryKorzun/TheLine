@@ -13,26 +13,128 @@ public class LevelGenerator : MonoBehaviour
     const float verticalStartPosition = 0.689f;
     private float x_axisDisplacementOfBarriers;
     private float y_axisDisplacementOfBarriers;
-
+    private int entryPointIndex = 3;
+    private Direction direction;
+    private Direction prohibitedDirection;
+    private int countOfForwardMove = 0;
+    private List<int> freeCellPositionIndices = new List<int>();
     private void Awake()
     {
         cam = Camera.main;
-
     }
+
+
+
+    enum Direction
+    {
+         Forward,
+         Left,
+         Right
+    }
+
+
+
 
 
     void Start()
     {
         DisplacementGridGeneration();
         StartingLocationGeneration();
+        prohibitedDirection = Direction.Forward;
+        InvokeRepeating("randomDirectionGenerator", 0, 1);
     }
 
 
+    private void randomDirectionGenerator()
+    {
+        freeCellPositionIndices.Clear();
+        freeCellPositionIndices.Add(entryPointIndex);
 
+        if (countOfForwardMove <=5)
+        {
+            if (entryPointIndex == 1 && prohibitedDirection == Direction.Right)
+            {
+                direction = Direction.Forward;
+                countOfForwardMove++;
+                AddNewRowOnMap();
+                return;
+            }
 
-    private void AddNewRowOfMap()
+            if (entryPointIndex == numberOfBlocksHorizontally - 1 && prohibitedDirection == Direction.Left)
+            {
+                direction = Direction.Forward;
+                AddNewRowOnMap();
+                countOfForwardMove++;
+                return;
+            }
+        }
+        else
+        {
+
+        }
+
+        int randEnamDir = Random.Range(0, 3);
+        direction = (Direction)randEnamDir;
+        while (prohibitedDirection == direction)
+        {
+            randEnamDir = Random.Range(0, 3);
+            direction = (Direction)randEnamDir;
+        }
+
+        if (direction == Direction.Forward)
+        {
+            AddNewRowOnMap();
+            return;
+        }
+
+        if (direction == Direction.Left)
+        {
+            prohibitedDirection = Direction.Right;
+            int newEntryPointIndex = Random.Range(1, entryPointIndex);
+            for (int i = newEntryPointIndex; i < entryPointIndex; i++)
+            {
+                freeCellPositionIndices.Add(i);
+            }
+            entryPointIndex = newEntryPointIndex;
+            AddNewRowOnMap();
+        }
+
+        if (direction == Direction.Right)
+        {
+            prohibitedDirection = Direction.Left;
+            int newEntryPointIndex = Random.Range(entryPointIndex, numberOfBlocksHorizontally);
+            for (int i = entryPointIndex; i < newEntryPointIndex; i++)
+            {
+                freeCellPositionIndices.Add(i);
+            }
+            entryPointIndex = newEntryPointIndex;
+            AddNewRowOnMap();
+        }
+    }
+
+    public void AddNewRowOnMap()
     {
 
+        string tnp = "entryPointIndex: " + entryPointIndex + " | ";
+        foreach (var item in freeCellPositionIndices)
+        {
+            tnp += item + ",";
+        }
+       // Debug.Log(tnp);
+
+
+        Debug.Log("-------------");
+        for (int i = 0; i < numberOfBlocksHorizontally; i++)
+        {
+            if (!freeCellPositionIndices.Contains(i))
+            {
+                _pool.GetFreeElement(displacementGridVectors[i]);
+                Debug.Log(i);
+            }
+
+
+        }
+        Debug.Log("-------------");
     }
 
     private void DisplacementGridGeneration()
@@ -55,10 +157,21 @@ public class LevelGenerator : MonoBehaviour
         {
             for (int j = 0; j < numberOfBlocksHorizontally; j++)
             {
-                if (j != 3)
+                if (i <= 2 && (j <= 2 || j>=4))
                 {
-                    var block = _pool.GetFreeElement(new Vector2(displacementGridVectors[j].x, posY));
+                    _pool.GetFreeElement(new Vector2(displacementGridVectors[j].x, posY));
                 }
+
+                if (i > 2 && (j <= 1 || j >= 5))
+                {
+                    if (i<=4)_pool.GetFreeElement(new Vector2(displacementGridVectors[j].x, posY));
+                }
+
+                if (i > 4 && (j <= 0 || j >= 6))
+                {
+                    _pool.GetFreeElement(new Vector2(displacementGridVectors[j].x, posY));
+                }
+
             }
             posY -= y_axisDisplacementOfBarriers;
         }

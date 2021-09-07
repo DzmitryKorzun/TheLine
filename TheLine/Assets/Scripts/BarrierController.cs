@@ -9,49 +9,35 @@ using System;
 
 public class BarrierController : MonoBehaviour
 {
-    [Inject]
-    private PersonController person;
-
+    [Inject] private PersonController person;
+    [SerializeField] private float distanceMoving = 12;
+    private Transform transformBarrier;
     public Action deactivationRowEvent;
-    public float speed = 6;
-    Sequence mySequence;
+    public float speed = 12;
+    
     private void Awake()
-    {        
-        mySequence = DOTween.Sequence();
-
-    }
-
-    public void GetPersonReference(PersonController refPerson)
     {
-        person = refPerson;
-        person.OnStartGame += ContinueGame;
-        person.OnPauseGame += StopMove;
+        transformBarrier = GetComponent<Transform>();
     }
+
 
     private void Start()
     {
-        mySequence.Append(this.transform.DOMoveY(-6, speed).OnComplete(deactivateBarrier).SetEase(Ease.Linear)); 
+        transformBarrier.DOLocalMoveY((transformBarrier.localPosition.y - distanceMoving), speed).SetEase(Ease.Linear).OnComplete(deactivateBarrier);
     }
 
-    private void StopMove()
-    {        
-        mySequence.Pause();
-    }
-
-    private void ContinueGame()
-    {
-        mySequence.Play();
-    }
-
-    private void deactivateBarrier()
-    {
-        deactivationRowEvent?.Invoke();
-        this.gameObject.SetActive(false);
-    }
+  
 
     private void OnEnable()
     {
-        
+        transformBarrier.DOLocalMoveY((transformBarrier.localPosition.y - distanceMoving), speed).SetEase(Ease.Linear).OnComplete(deactivateBarrier);
+    }
+
+
+    private void deactivateBarrier()
+    {
+
+        this.gameObject.SetActive(false);
     }
 
 }
