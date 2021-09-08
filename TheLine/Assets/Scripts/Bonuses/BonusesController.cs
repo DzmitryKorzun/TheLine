@@ -4,20 +4,18 @@ using Zenject;
 public class BonusesController : MonoBehaviour
 {
     private int randomBonus;
-    private InvulnerabilityBonus invulnerabilityBonus;
-    private LittleSizeBonus littleSizeBonus;
     [Inject] private BarrierController barrierController;
     private void Awake()
     {
-        invulnerabilityBonus = GetComponent<InvulnerabilityBonus>();
-        littleSizeBonus = GetComponent<LittleSizeBonus>();
+        this.GetComponent<SpriteRenderer>().DOColor(Color.yellow, 0.2f).SetLoops(100, LoopType.Yoyo);
         SelectBonus();
         
     }
     private void OnEnable()
     {
         SelectBonus();
-        this.transform.DOLocalMoveY((transform.localPosition.y - barrierController.distanceMoving), barrierController.speed).SetEase(Ease.Linear).OnComplete(Deactivation);
+        Debug.Log(this.transform.position.y);
+        this.transform.DOLocalMoveY(0.6f-barrierController.distanceMoving, barrierController.speed).SetEase(Ease.Linear).OnComplete(Deactivation);
     }
 
     private void Deactivation()
@@ -37,12 +35,12 @@ public class BonusesController : MonoBehaviour
         switch (randomBonus)
         {
             case 1:
-                invulnerabilityBonus.enabled = true;
-                littleSizeBonus.enabled = false;
+                this.gameObject.AddComponent<InvulnerabilityBonus>();
+                Destroy(this.gameObject.GetComponent<LittleSizeBonus>());
                 break;
             case 2:
-                invulnerabilityBonus.enabled = false;
-                littleSizeBonus.enabled = true;
+                this.gameObject.AddComponent<LittleSizeBonus>();
+                Destroy(this.gameObject.GetComponent<InvulnerabilityBonus>());
                 break;
             default:
                 break;

@@ -11,7 +11,7 @@ public class LittleSizeBonus : MonoBehaviour, IBonus
     private float originalScale;
     private void Awake()
     {
-        this.GetComponent<SpriteRenderer>().DOColor(Color.yellow, 0.2f).SetLoops(100, LoopType.Yoyo);
+
         originalScale = personController.transform.localScale.x;
         time = Mathf.RoundToInt(durection);
     }
@@ -30,7 +30,6 @@ public class LittleSizeBonus : MonoBehaviour, IBonus
         bonusPanel.gameObject.SetActive(true);
         InvokeRepeating("timer", 0, 1);
         personController.isVulnerable = true;
-        personController.transform.DOScale(originalScale* reductionRatio, 0.25f).SetLoops(100, LoopType.Yoyo);
         Invoke("EffectOff", durection);
     }
     private void timer()
