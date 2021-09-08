@@ -36,7 +36,6 @@ public class BarrierController : MonoBehaviour
 
     private void deactivateBarrier()
     {
-
         this.gameObject.SetActive(false);
     }
 

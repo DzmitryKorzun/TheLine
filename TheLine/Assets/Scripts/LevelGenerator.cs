@@ -56,7 +56,6 @@ public class LevelGenerator : MonoBehaviour
             randEnamDir = Random.Range(0, 3);
             direction = (Direction)randEnamDir;
         }
-        Debug.Log(direction);
         if (direction == Direction.Forward)
         {
             AddNewRowOnMap();
@@ -92,14 +91,6 @@ public class LevelGenerator : MonoBehaviour
 
     public void AddNewRowOnMap()
     {
-
-        string tnp = "entryPointIndex: " + entryPointIndex + " | ";
-        foreach (var item in freeCellPositionIndices)
-        {
-            tnp += item + ",";
-        }
-        Debug.Log(tnp);
-
         for (int i = 0; i < numberOfBlocksHorizontally; i++)
         {
             if (!freeCellPositionIndices.Contains(i))
@@ -108,16 +99,15 @@ public class LevelGenerator : MonoBehaviour
             }
             else
             {
-                if (randomBonusGenerator())
+                if (randomBonusGenerator() && bonusesController.gameObject.activeSelf == false)
                 {
                     Debug.Log("Bonus");
+                    bonusesController.transform.DOKill();
                     bonusesController.gameObject.SetActive(true);
                     bonusesController.transform.localPosition = displacementGridVectors[i];
                     Debug.Log(bonusesController.transform.localPosition);
                 }                    
             }
-
-
         }
     }
 
