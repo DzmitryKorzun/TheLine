@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -6,6 +7,8 @@ public class LevelGenerator : MonoBehaviour
 {
     [Inject] private Pool _pool;
     [Inject] private PoolObject barrier;
+    [Inject] private BonusesController bonusesController;
+    [Inject] private PersonController personController;
     private List<Vector2> displacementGridVectors = new List<Vector2>();
     private Camera cam;
     const int numberOfBlocksHorizontally = 7;
@@ -14,6 +17,7 @@ public class LevelGenerator : MonoBehaviour
     private float x_axisDisplacementOfBarriers;
     private float y_axisDisplacementOfBarriers;
     private int entryPointIndex = 3;
+    private float bonusDropChance = 0.15f;
     private Direction direction;
     private Direction prohibitedDirection;
     private int countOfForwardMove = 0;
@@ -21,9 +25,8 @@ public class LevelGenerator : MonoBehaviour
     private void Awake()
     {
         cam = Camera.main;
+        personController.GameOver += stopInvokAfterDeath;
     }
-
-
 
     enum Direction
     {
@@ -32,16 +35,12 @@ public class LevelGenerator : MonoBehaviour
          Right
     }
 
-
-
-
-
     void Start()
     {
         DisplacementGridGeneration();
         StartingLocationGeneration();
         prohibitedDirection = Direction.Forward;
-        InvokeRepeating("randomDirectionGenerator", 0, 1);
+        InvokeRepeating("randomDirectionGenerator", 1, 1);
     }
 
 
@@ -49,30 +48,7 @@ public class LevelGenerator : MonoBehaviour
     {
         freeCellPositionIndices.Clear();
         freeCellPositionIndices.Add(entryPointIndex);
-
-        if (countOfForwardMove <=5)
-        {
-            if (entryPointIndex == 1 && prohibitedDirection == Direction.Right)
-            {
-                direction = Direction.Forward;
-                countOfForwardMove++;
-                AddNewRowOnMap();
-                return;
-            }
-
-            if (entryPointIndex == numberOfBlocksHorizontally - 1 && prohibitedDirection == Direction.Left)
-            {
-                direction = Direction.Forward;
-                AddNewRowOnMap();
-                countOfForwardMove++;
-                return;
-            }
-        }
-        else
-        {
-
-        }
-
+        //Debug.Log(direction);
         int randEnamDir = Random.Range(0, 3);
         direction = (Direction)randEnamDir;
         while (prohibitedDirection == direction)
@@ -80,10 +56,11 @@ public class LevelGenerator : MonoBehaviour
             randEnamDir = Random.Range(0, 3);
             direction = (Direction)randEnamDir;
         }
-
+        Debug.Log(direction);
         if (direction == Direction.Forward)
         {
             AddNewRowOnMap();
+            prohibitedDirection = Direction.Forward;
             return;
         }
 
@@ -95,20 +72,21 @@ public class LevelGenerator : MonoBehaviour
             {
                 freeCellPositionIndices.Add(i);
             }
-            entryPointIndex = newEntryPointIndex;
             AddNewRowOnMap();
+            entryPointIndex = newEntryPointIndex;
         }
 
         if (direction == Direction.Right)
         {
             prohibitedDirection = Direction.Left;
-            int newEntryPointIndex = Random.Range(entryPointIndex, numberOfBlocksHorizontally);
-            for (int i = entryPointIndex; i < newEntryPointIndex; i++)
+            int newEntryPointIndex = Random.Range(entryPointIndex, numberOfBlocksHorizontally-1);
+            for (int i = entryPointIndex; i <= newEntryPointIndex; i++)
             {
                 freeCellPositionIndices.Add(i);
             }
-            entryPointIndex = newEntryPointIndex;
+
             AddNewRowOnMap();
+            entryPointIndex = newEntryPointIndex;
         }
     }
 
@@ -120,22 +98,38 @@ public class LevelGenerator : MonoBehaviour
         {
             tnp += item + ",";
         }
-       // Debug.Log(tnp);
+        Debug.Log(tnp);
 
-
-        Debug.Log("-------------");
         for (int i = 0; i < numberOfBlocksHorizontally; i++)
         {
             if (!freeCellPositionIndices.Contains(i))
             {
                 _pool.GetFreeElement(displacementGridVectors[i]);
-                Debug.Log(i);
+            }
+            else
+            {
+                if (randomBonusGenerator())
+                {
+                    Debug.Log("Bonus");
+                    bonusesController.gameObject.SetActive(true);
+                    bonusesController.transform.localPosition = displacementGridVectors[i];
+                    Debug.Log(bonusesController.transform.localPosition);
+                }                    
             }
 
 
         }
-        Debug.Log("-------------");
     }
+
+    private bool randomBonusGenerator()
+    {
+        if (Random.Range(1, (Mathf.RoundToInt(1/bonusDropChance))) == 1)
+        {
+            return true;
+        }
+        return false;
+    }
+
 
     private void DisplacementGridGeneration()
     {
@@ -177,4 +171,10 @@ public class LevelGenerator : MonoBehaviour
         }
 
     }
+
+    private void stopInvokAfterDeath()
+    {
+        CancelInvoke();
+    }
+
 }

@@ -7,17 +7,6 @@ public class UI_Controller : MonoBehaviour
 {
 
     [Inject] private PausePanelController pausePanel;
-    [Inject] private PersonController personController;
-    void Start()
-    {
-
-    }
-
-
-    void Update()
-    {
-        
-    }
 
     public void ActivationPauseButton()
     {

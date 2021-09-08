@@ -10,7 +10,7 @@ using System;
 public class BarrierController : MonoBehaviour
 {
     [Inject] private PersonController person;
-    [SerializeField] private float distanceMoving = 12;
+    [SerializeField] public float distanceMoving = 12;
     private Transform transformBarrier;
     public Action deactivationRowEvent;
     public float speed = 12;

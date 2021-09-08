@@ -29,7 +29,7 @@ public class PersonController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        OnPauseGame?.Invoke();
+     //   OnPauseGame?.Invoke();
         if (collision.gameObject.tag == "Block")
         {
             if (isVulnerable)
@@ -43,6 +43,10 @@ public class PersonController : MonoBehaviour
                 collision.gameObject.SetActive(false);
                 collision.transform.DOKill();
             }
+        }
+        if (collision.gameObject.tag == "Bonus")
+        {
+            collision.GetComponent<IBonus>().EffectOn();
         }
     }
 
