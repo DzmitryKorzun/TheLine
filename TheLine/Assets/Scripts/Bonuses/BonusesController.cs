@@ -18,7 +18,6 @@ public class BonusesController : MonoBehaviour
     {
         SelectBonus();
         this.transform.DOLocalMoveY((transform.localPosition.y - barrierController.distanceMoving), barrierController.speed).SetEase(Ease.Linear).OnComplete(Deactivation);
-        Debug.Log(transform.localPosition.y);
     }
 
     private void Deactivation()

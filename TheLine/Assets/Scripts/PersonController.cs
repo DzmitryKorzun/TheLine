@@ -5,8 +5,7 @@ using UnityEngine;
 using DG.Tweening;
 public class PersonController : MonoBehaviour
 {
-    public event Action OnPauseGame;
-    public event Action OnStartGame;
+
     public event Action GameOver;
     public bool isVulnerable = true;
     private Transform personTransform;
@@ -29,7 +28,6 @@ public class PersonController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-     //   OnPauseGame?.Invoke();
         if (collision.gameObject.tag == "Block")
         {
             if (isVulnerable)

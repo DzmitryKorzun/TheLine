@@ -9,6 +9,7 @@ public class LevelGenerator : MonoBehaviour
     [Inject] private PoolObject barrier;
     [Inject] private BonusesController bonusesController;
     [Inject] private PersonController personController;
+    [Inject] private UI_Controller uI;
     private List<Vector2> displacementGridVectors = new List<Vector2>();
     private Camera cam;
     const int numberOfBlocksHorizontally = 7;
@@ -26,6 +27,8 @@ public class LevelGenerator : MonoBehaviour
     {
         cam = Camera.main;
         personController.GameOver += stopInvokAfterDeath;
+        uI.OnStartGame += startInvoke;
+        uI.OnPauseGame += stopInvoke;
     }
 
     enum Direction
@@ -42,6 +45,17 @@ public class LevelGenerator : MonoBehaviour
         prohibitedDirection = Direction.Forward;
         InvokeRepeating("randomDirectionGenerator", 1, 1);
     }
+
+    private void startInvoke()
+    {
+        InvokeRepeating("randomDirectionGenerator", 0.5f, 1);
+    }
+
+    private void stopInvoke()
+    {
+        CancelInvoke();
+    }
+
 
 
     private void randomDirectionGenerator()
@@ -166,5 +180,6 @@ public class LevelGenerator : MonoBehaviour
     {
         CancelInvoke();
     }
+
 
 }

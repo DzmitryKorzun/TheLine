@@ -7,6 +7,7 @@ using Zenject;
 
 public class ScorePanelController : MonoBehaviour
 {
+    [Inject] private UI_Controller ui;
     [Inject] private PersonController personController;
     [SerializeField] private float scoreCount = 0;
     [SerializeField] private bool isScoreCounting = true;
@@ -15,8 +16,8 @@ public class ScorePanelController : MonoBehaviour
     private Text scoreText;
     private void Awake()
     {
-        personController.OnStartGame += ContinueScoring;
-        personController.OnPauseGame += StopScoring;
+        ui.OnStartGame += ContinueScoring;
+        ui.OnPauseGame += StopScoring;
         personController.GameOver += StopScoring;
         stringBuilder = new StringBuilder();
     }

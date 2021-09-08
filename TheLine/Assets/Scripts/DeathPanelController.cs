@@ -34,11 +34,4 @@ public class DeathPanelController : MonoBehaviour
         eventSystem.enabled = true;
         this.gameObject.SetActive(true);
     }
-
-
-
-    void Update()
-    {
-        
-    }
 }
