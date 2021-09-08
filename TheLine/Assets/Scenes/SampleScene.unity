@@ -2049,7 +2049,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1248132140}
+      - m_Target: {fileID: 1864361498}
         m_MethodName: RetryGame
         m_Mode: 1
         m_Arguments:
@@ -2708,7 +2708,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1248132140}
+      - m_Target: {fileID: 1864361498}
         m_MethodName: ContinueGame
         m_Mode: 1
         m_Arguments:
@@ -3097,7 +3097,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1248132140}
+      - m_Target: {fileID: 1864361498}
         m_MethodName: RetryGame
         m_Mode: 1
         m_Arguments:
